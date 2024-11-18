@@ -1,0 +1,22 @@
+To set up a flow where ground owners register, get verified by an admin, and then register grounds, you could implement the following steps:
+
+Ground Owner Registration:
+
+Create a form where ground owners can register with their details (e.g., name, email, contact, etc.).
+Save their registration status as "pending" until verified by an admin.
+Admin Verification:
+
+Set up an admin dashboard to view all pending ground owners.
+Provide "Approve" or "Reject" options in the dashboard. Once approved, the ground owner's status is updated to "verified."
+Ground Registration:
+
+Only verified ground owners can access the ground registration form.
+You can add a check in the backend to ensure that only ground owners with a verified status can register grounds.
+Database Schema Adjustments:
+
+In your user schema, add fields like role (e.g., "admin" or "ground_owner") and status (e.g., "pending," "verified").
+Update your ground schema to associate each ground with a verified ground owner, e.g., ownerId.
+Frontend Logic:
+
+Show the ground registration page only to verified ground owners.
+In the admin dashboard, show a list of all registered grounds, with the option for the admin to manage them.
