@@ -2,6 +2,7 @@ const express = require("express");
 const connectDB = require("./config/db");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const groundOwnerRoutes = require("./routes/groundOwner.routes"); // Import ground owner routes
 
 dotenv.config();
 
@@ -12,25 +13,30 @@ const app = express();
 
 // Middleware
 app.use(express.json()); // Parses JSON bodies
-app.use(cors()); // Enable CORS for requests from frontend
 app.use(express.urlencoded({ extended: true })); // Parses URL-encoded bodies
+
+// Configure CORS to allow requests from the frontend
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // Replace with your frontend URL
+    credentials: true, // Allow cookies or credentials in requests
+  })
+);
 
 // Define Routes
 app.use("/api/auth", require("./routes/auth"));
 app.use("/grounds", require("./routes/ground.routes"));
-app.use("/api/groundOwners", require("./routes/groundOwner.routes"))
+app.use('/ground-owners', groundOwnerRoutes); // Use imported routes here
+//app.use('/admin', adminRoutes);
 app.use('/api/payment', require('./routes/payment'));
+//app.use('/api/bookings', require('./routes/booking.routes'));
 
-// In your `server.js` or main backend file
+
+// Razorpay API key route
 app.get("/api/getkey", (req, res) => {
-    res.status(200).json({ key: process.env.RAZORPAY_KEY_ID });
-  });
-  
+  res.status(200).json({ key: process.env.RAZORPAY_KEY_ID });
+});
 
+// Start the server
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
-//key id :rzp_live_W52is7CYnDpVKo
-//secrete key:i56WNN6yg94qRhgpxqBHTUcK

@@ -1,9 +1,17 @@
-// routes/groundOwner.routes.js
 const express = require('express');
-const router = express.Router();
-const { registerGroundOwner } = require('../controllers/groundOwner.controller');
+const {
+  registerGroundOwner,
+  getGroundOwners,
+  approveGroundOwner,
+  rejectGroundOwner,
+} = require('../controllers/groundOwner.controller.js');
 
-// Register a new ground owner
-router.post('/register', registerGroundOwner);
+const router = express.Router();
+
+// Ground Owner Routes
+router.post('/register', registerGroundOwner);         // Register ground owner
+router.get('/', getGroundOwners);                     // Get all ground owners
+router.put('/:id/approve', approveGroundOwner);       // Approve a ground owner
+router.delete('/:id/reject', rejectGroundOwner);      // Reject a ground owner
 
 module.exports = router;

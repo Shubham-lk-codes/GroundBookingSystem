@@ -1,36 +1,28 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  ground: {
+  groundId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Ground',
     required: true,
   },
-  date: {
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  amount: {
+    type: Number,
+    required: true,
+  },
+  bookingDate: {
     type: Date,
-    required: true,
-  },
-  startTime: {
-    type: String, // Can use "HH:MM" format for time as string
-    required: true,
-  },
-  endTime: {
-    type: String,
-    required: true,
+    default: Date.now,
   },
   status: {
     type: String,
-    enum: ['pending', 'confirmed', 'canceled'],
+    enum: ['pending', 'confirmed'],
     default: 'pending',
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
   },
 });
 

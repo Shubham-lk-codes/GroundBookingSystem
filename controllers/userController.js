@@ -45,26 +45,24 @@ const userSignUp = async (req, res) => {
 
 // User Login
 const userLogin = async (req, res) => {
-    const { email, password } = req.body;
-    console.log(req.body, "user login");
-
     try {
-        // Check if user exists
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ success: false, msg: "Email and password are required" });
+        }
+
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ success: false, msg: "Invalid credentials" });
         }
 
-        // Verify the password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ success: false, msg: "Invalid credentials" });
         }
 
-        // Generate a token
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        
-        // Set token in a secure cookie
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -72,27 +70,18 @@ const userLogin = async (req, res) => {
             maxAge: 3600000, // 1 hour
         });
 
-        // Optionally send verification email if needed
-        if (user.verificationToken) { // Assuming token is created during signup
-            await sendVerificationEmail(
-                user.email,
-                "Your verification code",
-                `Hello ${user.name},\n\nPlease use the following code to verify your account: ${user.verificationToken}`
-            );
-        }
-
-        // Send login success response
         return res.status(200).json({
             success: true,
             msg: "Login successful",
             user: { id: user._id, name: user.name, email: user.email },
-            token,
+            token
         });
     } catch (err) {
-        console.error("Login error:", err.message);
+        console.error("Login error:", err.message, err.stack);
         return res.status(500).json({ success: false, msg: "Server error, please try again later" });
     }
 };
+
 
 // User Logout
 const userLogout = (req, res) => {

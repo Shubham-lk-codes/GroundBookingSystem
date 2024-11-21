@@ -21,6 +21,10 @@ const groundSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  imageUrl: {
+    type: String, // Cloudinary image URL
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
