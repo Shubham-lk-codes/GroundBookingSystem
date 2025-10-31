@@ -1,32 +1,53 @@
 const Ground = require('../models/ground');
 
 // Add a new ground
+
 const addGround = async (req, res) => {
   const { name, location, amenities, pricePerHour, description } = req.body;
 
   try {
+    // Debug logs to check received data
+    console.log("📥 Incoming ground data:", req.body);
+    console.log("🖼️ Uploaded file info:", req.file);
+
     // Check for uploaded file
     if (!req.file) {
-      return res.status(400).json({ success: false, msg: 'Image is required' });
+      return res.status(400).json({ success: false, msg: "Image is required" });
+    }
+
+    // Validate required fields
+    if (!name || !location || !amenities || !pricePerHour || !description) {
+      return res.status(400).json({ success: false, msg: "All fields are required" });
     }
 
     // Create a new ground document
     const newGround = new Ground({
       name,
       location,
-      amenities: amenities.split(',').map(item => item.trim()),
+      amenities: amenities.split(",").map((item) => item.trim()),
       pricePerHour,
       description,
       imageUrl: req.file.path, // Cloudinary URL
     });
 
     await newGround.save();
-    res.status(201).json({ success: true, msg: 'Ground added successfully', ground: newGround });
+
+    console.log("✅ Ground added successfully:", newGround);
+
+    res
+      .status(201)
+      .json({ success: true, msg: "Ground added successfully", ground: newGround });
   } catch (err) {
-    console.error('Error adding ground:', err);
-    res.status(500).json({ success: false, msg: 'Server error' });
+    console.error("❌ Error adding ground:", err.message);
+    console.error(err.stack);
+    res.status(500).json({
+      success: false,
+      msg: err.message || "Server error",
+      error: err.stack,
+    });
   }
 };
+
 
 // Retrieve all grounds
 const allGround = async (req, res) => {
