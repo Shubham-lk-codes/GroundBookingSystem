@@ -24,7 +24,7 @@ const upload = multer({ storage });
 
 router.post('/add', upload.single('image'), addGround);
 // GET /grounds/:id
-router.get("/grounds/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const ground = await Ground.findById(req.params.id);
     res.status(200).json({ ground });
