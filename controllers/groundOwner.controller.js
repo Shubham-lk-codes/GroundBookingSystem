@@ -80,15 +80,17 @@ exports.rejectGroundOwner = async (req, res) => {
 
 
 // ✅ Add or Update Speciality, Images, and Availability
+// ✅ Add or Update Speciality & Availability (excluding slider images)
 exports.addOrUpdateGroundDetails = async (req, res) => {
   try {
-    const { groundId, speciality, availability, sliderImages } = req.body;
+    const { groundId, speciality, availability } = req.body;
 
     if (!groundId || !speciality) {
-      return res.status(400).json({ success: false, msg: "Ground ID and speciality are required" });
+      return res
+        .status(400)
+        .json({ success: false, msg: "Ground ID and speciality are required" });
     }
 
-    // Find existing ground detail or create new
     let groundDetail = await GroundDetail.findOne({ ground: groundId });
 
     if (!groundDetail) {
@@ -96,19 +98,53 @@ exports.addOrUpdateGroundDetails = async (req, res) => {
         ground: groundId,
         speciality,
         availability,
-        sliderImages,
       });
     } else {
       groundDetail.speciality = speciality || groundDetail.speciality;
       groundDetail.availability = availability || groundDetail.availability;
-      groundDetail.sliderImages = sliderImages || groundDetail.sliderImages;
     }
 
     await groundDetail.save();
 
     res.status(200).json({
       success: true,
-      msg: "Ground details updated successfully",
+      msg: "Ground speciality and availability updated successfully",
+      data: groundDetail,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: "Server error" });
+  }
+};
+
+// ✅ Add or Update Slider Images Separately
+exports.addOrUpdateSliderImages = async (req, res) => {
+  try {
+    const { groundId, sliderImages } = req.body;
+
+    if (!groundId || !sliderImages || !Array.isArray(sliderImages)) {
+      return res.status(400).json({
+        success: false,
+        msg: "Ground ID and sliderImages (array) are required",
+      });
+    }
+
+    let groundDetail = await GroundDetail.findOne({ ground: groundId });
+
+    if (!groundDetail) {
+      groundDetail = new GroundDetail({
+        ground: groundId,
+        sliderImages,
+      });
+    } else {
+      groundDetail.sliderImages = sliderImages;
+    }
+
+    await groundDetail.save();
+
+    res.status(200).json({
+      success: true,
+      msg: "Slider images updated successfully",
       data: groundDetail,
     });
   } catch (err) {
@@ -122,7 +158,7 @@ exports.getGroundDetails = async (req, res) => {
   try {
     const { groundId } = req.params;
 
-    const groundDetail = await GroundDetail.findOne({ ground: groundId }).populate('ground');
+    const groundDetail = await GroundDetail.findOne({ ground: groundId }).populate("ground");
 
     if (!groundDetail) {
       return res.status(404).json({ success: false, msg: "Ground details not found" });
@@ -137,4 +173,7 @@ exports.getGroundDetails = async (req, res) => {
     res.status(500).json({ success: false, msg: "Server error" });
   }
 };
+
+// ✅ Get Ground Details (for owner/admin)
+
 
