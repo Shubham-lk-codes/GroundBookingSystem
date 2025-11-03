@@ -4,6 +4,8 @@ const User = require("../models/user.js");
 const generateTokenAndSetCookie = require("../utils/genarateTokenAndSetCooke.js");
 const sendVerificationEmail = require("../nodmailer/sendEamil.js")
 const dotenv = require("dotenv");
+// controllers/userController.js
+const GroundDetail = require('../models/groundDetail');
 
 dotenv.config();
 
@@ -92,5 +94,43 @@ const userLogout = (req, res) => {
     });
     return res.status(200).json({ success: true, msg: "Logged out successfully" });
 };
+
+
+
+// ✅ Add or Update Rating
+exports.addOrUpdateRating = async (req, res) => {
+  try {
+    const { groundId, rating } = req.body;
+
+    if (!groundId || rating === undefined) {
+      return res.status(400).json({ success: false, msg: "Ground ID and rating are required" });
+    }
+
+    if (rating < 0 || rating > 5) {
+      return res.status(400).json({ success: false, msg: "Rating must be between 0 and 5" });
+    }
+
+    // Find existing ground detail or create if not exists
+    let groundDetail = await GroundDetail.findOne({ ground: groundId });
+
+    if (!groundDetail) {
+      groundDetail = new GroundDetail({ ground: groundId, rating });
+    } else {
+      groundDetail.rating = rating;
+    }
+
+    await groundDetail.save();
+
+    res.status(200).json({
+      success: true,
+      msg: "Rating updated successfully",
+      data: groundDetail,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: "Server error" });
+  }
+};
+
 
 module.exports = { userSignUp, userLogin, userLogout };
