@@ -98,7 +98,7 @@ const userLogout = (req, res) => {
 
 
 // ✅ Add or Update Rating
-exports.addOrUpdateRating = async (req, res) => {
+const addOrUpdateRating = async (req, res) => {
   try {
     const { groundId, rating } = req.body;
 
@@ -133,4 +133,4 @@ exports.addOrUpdateRating = async (req, res) => {
 };
 
 
-module.exports = { userSignUp, userLogin, userLogout };
+module.exports = { userSignUp, userLogin, userLogout,addOrUpdateRating };
