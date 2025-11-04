@@ -7,7 +7,7 @@ const {
   addGround,
   allGround,
   updateGround,
-  deleteGround,
+  deleteGround,getGroundById
 } = require('../controllers/ground.controller.js');
 
 const router = express.Router();
@@ -24,14 +24,7 @@ const upload = multer({ storage });
 
 router.post('/add', upload.single('image'), addGround);
 // GET /grounds/:id
-router.get("/:id", async (req, res) => {
-  try {
-    const ground = await Ground.findById(req.params.id);
-    res.status(200).json({ ground });
-  } catch (error) {
-    res.status(500).json({ msg: "Error fetching ground" });
-  }
-});
+router.get("/:id", getGroundById);
 
 router.get('/', allGround);
 router.put('/update/:id', upload.single('image'), updateGround);

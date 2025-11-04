@@ -1,5 +1,5 @@
 const Ground = require('../models/ground');
-
+const GroundDetail = require('../models/groundDetail');
 // Add a new ground
 
 const addGround = async (req, res) => {
@@ -49,7 +49,7 @@ const addGround = async (req, res) => {
 };
 
 
-// Retrieve all grounds
+// GET /grounds
 const allGround = async (req, res) => {
   try {
     const grounds = await Ground.find();
@@ -58,12 +58,39 @@ const allGround = async (req, res) => {
       return res.status(404).json({ success: false, msg: 'No grounds found' });
     }
 
-    res.status(200).json({ success: true, grounds });
+    // Merge with GroundDetail
+    const groundsWithDetails = await Promise.all(
+      grounds.map(async (ground) => {
+        const details = await GroundDetail.findOne({ ground: ground._id });
+        return { ...ground.toObject(), details };
+      })
+    );
+
+    res.status(200).json({ success: true, grounds: groundsWithDetails });
   } catch (err) {
     console.error('Error retrieving grounds:', err);
     res.status(500).json({ success: false, msg: 'Server error' });
   }
 };
+
+// GET /grounds/:id
+const getGroundById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const ground = await Ground.findById(id);
+    if (!ground) {
+      return res.status(404).json({ success: false, msg: 'Ground not found' });
+    }
+
+    const details = await GroundDetail.findOne({ ground: id });
+    res.status(200).json({ success: true, ground: { ...ground.toObject(), details } });
+  } catch (err) {
+    console.error('Error retrieving ground:', err);
+    res.status(500).json({ success: false, msg: 'Server error' });
+  }
+};
+
 
 // Update an existing ground
 const updateGround = async (req, res) => {
@@ -110,4 +137,4 @@ const deleteGround = async (req, res) => {
   }
 };
 
-module.exports = { addGround, allGround, updateGround, deleteGround };
+module.exports = { addGround, allGround, updateGround, deleteGround,getGroundById };
