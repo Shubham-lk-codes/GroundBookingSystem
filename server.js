@@ -3,6 +3,7 @@ const connectDB = require("./config/db");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const groundOwnerRoutes = require("./routes/groundOwner.routes"); // Import ground owner routes
+const eventRoutes = require("./routes/eventRoutes"); 
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use('/ground-owners', groundOwnerRoutes); // Use imported routes here
 //app.use('/admin', adminRoutes);
 app.use('/api/payment', require('./routes/payment'));
 //app.use('/api/bookings', require('./routes/booking.routes'));
+app.use("/events", eventRoutes);
 
 
 // Razorpay API key route
