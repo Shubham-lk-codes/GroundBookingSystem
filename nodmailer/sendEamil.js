@@ -1,4 +1,4 @@
-const sendEmail = require("../nodmailer/configAndSendemail.js");
+const sendEmail = require("./configAndSendemail.js");
 const User = require('../models/user.js');
 
 // Controller function to send verification email
