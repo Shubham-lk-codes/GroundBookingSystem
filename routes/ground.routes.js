@@ -7,7 +7,8 @@ const {
   addGround,
   allGround,
   updateGround,
-  deleteGround,getGroundById
+  deleteGround,getGroundById,
+  updateGroundSpeciality,
 } = require('../controllers/ground.controller.js');
 
 const router = express.Router();
@@ -28,6 +29,7 @@ router.get("/:id", getGroundById);
 
 router.get('/', allGround);
 router.put('/update/:id', upload.single('image'), updateGround);
+router.put('/update/:id/speciality', updateGroundSpeciality);
 router.delete('/delete/:id', deleteGround);
 
 module.exports = router;
