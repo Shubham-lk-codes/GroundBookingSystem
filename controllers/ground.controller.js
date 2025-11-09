@@ -94,7 +94,7 @@ const getGroundById = async (req, res) => {
 
 // Update an existing ground
 const updateGround = async (req, res) => {
-  const { name, location, amenities, pricePerHour, description } = req.body;
+  const { name, location, amenities, pricePerHour, description,speciality } = req.body;
 
   try {
     const ground = await Ground.findById(req.params.id);
@@ -108,6 +108,7 @@ const updateGround = async (req, res) => {
     ground.amenities = amenities ? amenities.split(',').map(item => item.trim()) : ground.amenities;
     ground.pricePerHour = pricePerHour || ground.pricePerHour;
     ground.description = description || ground.description;
+    ground.speciality = speciality || ground.speciality;
 
     // Update image if a new one is provided
     if (req.file) {
