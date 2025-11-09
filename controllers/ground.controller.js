@@ -93,40 +93,40 @@ const getGroundById = async (req, res) => {
 
 
 // Update an existing ground
-const updateGround = async (req, res) => {
-  const { name, location, amenities, pricePerHour, description,speciality } = req.body;
+// const updateGround = async (req, res) => {
+//   const { name, location, amenities, pricePerHour, description,speciality } = req.body;
 
-  try {
-    const ground = await Ground.findById(req.params.id);
-    if (!ground) {
-      return res.status(404).json({ success: false, msg: 'Ground not found' });
-    }
+//   try {
+//     const ground = await Ground.findById(req.params.id);
+//     if (!ground) {
+//       return res.status(404).json({ success: false, msg: 'Ground not found' });
+//     }
 
-    // Update fields
-    ground.name = name || ground.name;
-    ground.location = location || ground.location;
-    ground.amenities = amenities ? amenities.split(',').map(item => item.trim()) : ground.amenities;
-    ground.pricePerHour = pricePerHour || ground.pricePerHour;
-    ground.description = description || ground.description;
-    ground.speciality = speciality || ground.speciality;
+//     // Update fields
+//     ground.name = name || ground.name;
+//     ground.location = location || ground.location;
+//     ground.amenities = amenities ? amenities.split(',').map(item => item.trim()) : ground.amenities;
+//     ground.pricePerHour = pricePerHour || ground.pricePerHour;
+//     ground.description = description || ground.description;
+//     ground.speciality = speciality || ground.speciality;
 
-    // Update image if a new one is provided
-    if (req.file) {
-      ground.imageUrl = req.file.path;
-    }
+//     // Update image if a new one is provided
+//     if (req.file) {
+//       ground.imageUrl = req.file.path;
+//     }
 
-    await ground.save();
-    res.status(200).json({ success: true, msg: 'Ground updated successfully', ground });
-  } catch (err) {
-    console.error('Error updating ground:', err);
-    res.status(500).json({ success: false, msg: 'Server error' });
-  }
-};
+//     await ground.save();
+//     res.status(200).json({ success: true, msg: 'Ground updated successfully', ground });
+//   } catch (err) {
+//     console.error('Error updating ground:', err);
+//     res.status(500).json({ success: false, msg: 'Server error' });
+//   }
+// };
 
 
 
 // 🧩 Update or create GroundDetail linked to a Ground
-const updateGroundDetail = async (req, res) => {
+const updateGround = async (req, res) => {
   const { speciality, rating, availability, sliderImages } = req.body;
   const { groundId } = req.params; // Ground ID from URL
 
@@ -173,7 +173,7 @@ const updateGroundDetail = async (req, res) => {
   }
 };
 
-module.exports = { updateGroundDetail };
+module.exports = { updateGround };
 
 
 // Delete a ground
