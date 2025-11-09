@@ -123,6 +123,59 @@ const updateGround = async (req, res) => {
   }
 };
 
+
+
+// 🧩 Update or create GroundDetail linked to a Ground
+const updateGroundDetail = async (req, res) => {
+  const { speciality, rating, availability, sliderImages } = req.body;
+  const { groundId } = req.params; // Ground ID from URL
+
+  try {
+    // 🔍 Step 1: Ensure ground exists
+    const ground = await Ground.findById(groundId);
+    if (!ground) {
+      return res.status(404).json({ success: false, msg: 'Ground not found' });
+    }
+
+    // 🔍 Step 2: Check if GroundDetail already exists for this ground
+    let groundDetail = await GroundDetail.findOne({ ground: groundId });
+
+    if (!groundDetail) {
+      // Create new GroundDetail if none exists
+      groundDetail = new GroundDetail({
+        ground: groundId,
+        speciality,
+        rating,
+        availability,
+        sliderImages,
+      });
+    } else {
+      // Update existing fields
+      if (speciality) groundDetail.speciality = speciality;
+      if (rating !== undefined) groundDetail.rating = rating;
+      if (availability) groundDetail.availability = availability;
+      if (sliderImages) groundDetail.sliderImages = sliderImages;
+    }
+
+    await groundDetail.save();
+
+    // 🧩 Step 3: Populate ground info for response
+    const populatedDetail = await groundDetail.populate('ground');
+
+    res.status(200).json({
+      success: true,
+      msg: 'GroundDetail updated successfully',
+      groundDetail: populatedDetail,
+    });
+  } catch (err) {
+    console.error('Error updating GroundDetail:', err);
+    res.status(500).json({ success: false, msg: 'Server error' });
+  }
+};
+
+module.exports = { updateGroundDetail };
+
+
 // Delete a ground
 const deleteGround = async (req, res) => {
   try {
