@@ -191,4 +191,44 @@ const deleteGround = async (req, res) => {
   }
 };
 
+exports.updateGroundSpeciality = async (req, res) => {
+  const { speciality } = req.body; // sirf speciality change karni hai
+  const { groundId } = req.params; // Ground ka ID aaega params se
+
+  try {
+    // Pehle check karo kya groundDetail exist karta hai
+    let groundDetail = await GroundDetail.findOne({ ground: groundId });
+
+    // Agar nahi mila toh naya create karo
+    if (!groundDetail) {
+      groundDetail = new GroundDetail({
+        ground: groundId,
+        speciality,
+      });
+      await groundDetail.save();
+      return res.status(201).json({
+        success: true,
+        msg: 'Speciality added successfully for the ground',
+        groundDetail,
+      });
+    }
+
+    // Agar mil gaya toh sirf speciality update karo
+    groundDetail.speciality = speciality || groundDetail.speciality;
+    await groundDetail.save();
+
+    res.status(200).json({
+      success: true,
+      msg: 'Speciality updated successfully',
+      groundDetail,
+    });
+  } catch (error) {
+    console.error('Error updating speciality:', error);
+    res.status(500).json({
+      success: false,
+      msg: 'Server error while updating speciality',
+    });
+  }
+};
+
 module.exports = { addGround, allGround, updateGround, deleteGround,getGroundById };
