@@ -231,4 +231,33 @@ const updateGroundSpeciality = async (req, res) => {
   }
 };
 
-module.exports = { addGround, allGround, updateGround, deleteGround,getGroundById,updateGroundSpeciality };
+exports.rateGround = async (req, res) => {
+  try {
+    const { groundId } = req.params;
+    const { rating } = req.body;
+
+    if (!rating || rating < 0 || rating > 5) {
+      return res.status(400).json({ message: 'Rating must be between 0 and 5' });
+    }
+
+    // Find the ground details
+    const groundDetail = await GroundDetail.findOne({ ground: groundId });
+    if (!groundDetail) {
+      return res.status(404).json({ message: 'Ground details not found' });
+    }
+
+    // Update the rating (average logic can be customized later if you want per-user ratings)
+    groundDetail.rating = rating;
+    await groundDetail.save();
+
+    res.status(200).json({
+      message: 'Rating updated successfully',
+      groundDetail,
+    });
+  } catch (error) {
+    console.error('Error rating ground:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = { addGround, allGround, updateGround, deleteGround,getGroundById,updateGroundSpeciality ,rateGround};
