@@ -9,6 +9,7 @@ const {
   updateGround,
   deleteGround,getGroundById,
   updateGroundSpeciality,
+  rateGround, getGroundRating 
 } = require('../controllers/ground.controller.js');
 
 const router = express.Router();
