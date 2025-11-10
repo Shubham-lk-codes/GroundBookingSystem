@@ -32,5 +32,9 @@ router.get('/', allGround);
 router.put('/update/:id', upload.single('image'), updateGround);
 router.put('/update/:id/speciality', updateGroundSpeciality);
 router.delete('/delete/:id', deleteGround);
+router.put('/:groundId/rate', rateGround);
+
+// ✅ Get rating for a specific ground
+router.get('/:groundId/rating', getGroundRating);
 
 module.exports = router;
