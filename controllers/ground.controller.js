@@ -231,7 +231,7 @@ const updateGroundSpeciality = async (req, res) => {
   }
 };
 
-exports.rateGround = async (req, res) => {
+const rateGround = async (req, res) => {
   try {
     const { groundId } = req.params;
     const { rating } = req.body;
