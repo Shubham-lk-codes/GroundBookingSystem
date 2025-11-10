@@ -260,4 +260,24 @@ const rateGround = async (req, res) => {
   }
 };
 
-module.exports = { addGround, allGround, updateGround, deleteGround,getGroundById,updateGroundSpeciality ,rateGround};
+// ✅ Get rating for a specific ground
+const getGroundRating = async (req, res) => {
+  try {
+    const { groundId } = req.params;
+
+    const groundDetail = await GroundDetail.findOne({ ground: groundId });
+    if (!groundDetail) {
+      return res.status(404).json({ message: 'Ground details not found' });
+    }
+
+    res.status(200).json({
+      groundId,
+      rating: groundDetail.rating,
+    });
+  } catch (error) {
+    console.error('Error fetching rating:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = { addGround, allGround, updateGround, deleteGround,getGroundById,updateGroundSpeciality,getGroundRating ,rateGround};
