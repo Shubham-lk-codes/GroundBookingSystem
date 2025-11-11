@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const groundSchema = new mongoose.Schema({
   name: {
@@ -31,4 +31,4 @@ const groundSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Ground', groundSchema);
+module.exports = mongoose.model("Ground", groundSchema);
