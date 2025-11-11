@@ -1,5 +1,5 @@
-const Ground = require('../models/ground');
-const GroundDetail = require('../models/groundDetail');
+const Ground = require("../models/ground");
+const GroundDetail = require("../models/groundDetail");
 // Add a new ground
 
 const addGround = async (req, res) => {
@@ -17,7 +17,9 @@ const addGround = async (req, res) => {
 
     // Validate required fields
     if (!name || !location || !amenities || !pricePerHour || !description) {
-      return res.status(400).json({ success: false, msg: "All fields are required" });
+      return res
+        .status(400)
+        .json({ success: false, msg: "All fields are required" });
     }
 
     // Create a new ground document
@@ -29,14 +31,17 @@ const addGround = async (req, res) => {
       description,
       imageUrl: req.file.path, // Cloudinary URL
     });
--
-    await newGround.save();
+    -(await newGround.save());
 
     console.log("✅ Ground added successfully:", newGround);
 
     res
       .status(201)
-      .json({ success: true, msg: "Ground added successfully", ground: newGround });
+      .json({
+        success: true,
+        msg: "Ground added successfully",
+        ground: newGround,
+      });
   } catch (err) {
     console.error("❌ Error adding ground:", err.message);
     console.error(err.stack);
@@ -48,14 +53,13 @@ const addGround = async (req, res) => {
   }
 };
 
-
 // GET /grounds
 const allGround = async (req, res) => {
   try {
     const grounds = await Ground.find();
 
     if (!grounds || grounds.length === 0) {
-      return res.status(404).json({ success: false, msg: 'No grounds found' });
+      return res.status(404).json({ success: false, msg: "No grounds found" });
     }
 
     // Merge with GroundDetail
@@ -68,8 +72,8 @@ const allGround = async (req, res) => {
 
     res.status(200).json({ success: true, grounds: groundsWithDetails });
   } catch (err) {
-    console.error('Error retrieving grounds:', err);
-    res.status(500).json({ success: false, msg: 'Server error' });
+    console.error("Error retrieving grounds:", err);
+    res.status(500).json({ success: false, msg: "Server error" });
   }
 };
 
@@ -80,17 +84,18 @@ const getGroundById = async (req, res) => {
 
     const ground = await Ground.findById(id);
     if (!ground) {
-      return res.status(404).json({ success: false, msg: 'Ground not found' });
+      return res.status(404).json({ success: false, msg: "Ground not found" });
     }
 
     const details = await GroundDetail.findOne({ ground: id });
-    res.status(200).json({ success: true, ground: { ...ground.toObject(), details } });
+    res
+      .status(200)
+      .json({ success: true, ground: { ...ground.toObject(), details } });
   } catch (err) {
-    console.error('Error retrieving ground:', err);
-    res.status(500).json({ success: false, msg: 'Server error' });
+    console.error("Error retrieving ground:", err);
+    res.status(500).json({ success: false, msg: "Server error" });
   }
 };
-
 
 // Update an existing ground
 // const updateGround = async (req, res) => {
@@ -123,8 +128,6 @@ const getGroundById = async (req, res) => {
 //   }
 // };
 
-
-
 // 🧩 Update or create GroundDetail linked to a Ground
 const updateGround = async (req, res) => {
   const { speciality, rating, availability, sliderImages } = req.body;
@@ -134,7 +137,7 @@ const updateGround = async (req, res) => {
     // 🔍 Step 1: Ensure ground exists
     const ground = await Ground.findById(groundId);
     if (!ground) {
-      return res.status(404).json({ success: false, msg: 'Ground not found' });
+      return res.status(404).json({ success: false, msg: "Ground not found" });
     }
 
     // 🔍 Step 2: Check if GroundDetail already exists for this ground
@@ -160,34 +163,33 @@ const updateGround = async (req, res) => {
     await groundDetail.save();
 
     // 🧩 Step 3: Populate ground info for response
-    const populatedDetail = await groundDetail.populate('ground');
+    const populatedDetail = await groundDetail.populate("ground");
 
     res.status(200).json({
       success: true,
-      msg: 'GroundDetail updated successfully',
+      msg: "GroundDetail updated successfully",
       groundDetail: populatedDetail,
     });
   } catch (err) {
-    console.error('Error updating GroundDetail:', err);
-    res.status(500).json({ success: false, msg: 'Server error' });
+    console.error("Error updating GroundDetail:", err);
+    res.status(500).json({ success: false, msg: "Server error" });
   }
 };
 
 module.exports = { updateGround };
-
 
 // Delete a ground
 const deleteGround = async (req, res) => {
   try {
     const ground = await Ground.findByIdAndDelete(req.params.id);
     if (!ground) {
-      return res.status(404).json({ success: false, msg: 'Ground not found' });
+      return res.status(404).json({ success: false, msg: "Ground not found" });
     }
 
-    res.status(200).json({ success: true, msg: 'Ground deleted successfully' });
+    res.status(200).json({ success: true, msg: "Ground deleted successfully" });
   } catch (err) {
-    console.error('Error deleting ground:', err);
-    res.status(500).json({ success: false, msg: 'Server error' });
+    console.error("Error deleting ground:", err);
+    res.status(500).json({ success: false, msg: "Server error" });
   }
 };
 
@@ -208,7 +210,7 @@ const updateGroundSpeciality = async (req, res) => {
       await groundDetail.save();
       return res.status(201).json({
         success: true,
-        msg: 'Speciality added successfully for the ground',
+        msg: "Speciality added successfully for the ground",
         groundDetail,
       });
     }
@@ -219,14 +221,14 @@ const updateGroundSpeciality = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      msg: 'Speciality updated successfully',
+      msg: "Speciality updated successfully",
       groundDetail,
     });
   } catch (error) {
-    console.error('Error updating speciality:', error);
+    console.error("Error updating speciality:", error);
     res.status(500).json({
       success: false,
-      msg: 'Server error while updating speciality',
+      msg: "Server error while updating speciality",
     });
   }
 };
@@ -237,13 +239,15 @@ const rateGround = async (req, res) => {
     const { rating } = req.body;
 
     if (!rating || rating < 0 || rating > 5) {
-      return res.status(400).json({ message: 'Rating must be between 0 and 5' });
+      return res
+        .status(400)
+        .json({ message: "Rating must be between 0 and 5" });
     }
 
     // Find the ground details
     const groundDetail = await GroundDetail.findOne({ ground: groundId });
     if (!groundDetail) {
-      return res.status(404).json({ message: 'Ground details not found' });
+      return res.status(404).json({ message: "Ground details not found" });
     }
 
     // Update the rating (average logic can be customized later if you want per-user ratings)
@@ -251,12 +255,12 @@ const rateGround = async (req, res) => {
     await groundDetail.save();
 
     res.status(200).json({
-      message: 'Rating updated successfully',
+      message: "Rating updated successfully",
       groundDetail,
     });
   } catch (error) {
-    console.error('Error rating ground:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error rating ground:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -267,7 +271,7 @@ const getGroundRating = async (req, res) => {
 
     const groundDetail = await GroundDetail.findOne({ ground: groundId });
     if (!groundDetail) {
-      return res.status(404).json({ message: 'Ground details not found' });
+      return res.status(404).json({ message: "Ground details not found" });
     }
 
     res.status(200).json({
@@ -275,9 +279,18 @@ const getGroundRating = async (req, res) => {
       rating: groundDetail.rating,
     });
   } catch (error) {
-    console.error('Error fetching rating:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error fetching rating:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-module.exports = { addGround, allGround, updateGround, deleteGround,getGroundById,updateGroundSpeciality,getGroundRating ,rateGround};
+module.exports = {
+  addGround,
+  allGround,
+  updateGround,
+  deleteGround,
+  getGroundById,
+  updateGroundSpeciality,
+  getGroundRating,
+  rateGround,
+};
