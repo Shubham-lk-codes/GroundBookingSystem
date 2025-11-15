@@ -25,8 +25,6 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage });
 
 
-
-
 router.post('/add', upload.single('image'), addGround);
 // GET /grounds/:id
 router.get("/:id", getGroundById);
