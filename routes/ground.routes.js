@@ -37,6 +37,6 @@ router.delete('/delete/:id', deleteGround);
 router.put('/:groundId/rate', rateGround);
 
 // ✅ Get rating for a specific ground
-router.get('/:groundId/rating', getGroundRating);
+router.get('/:id/rating', getGroundRating);
 
 module.exports = router;

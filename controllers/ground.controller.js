@@ -235,7 +235,7 @@ const updateGroundSpeciality = async (req, res) => {
 
 const rateGround = async (req, res) => {
   try {
-    const { groundId } = req.params;
+    const { id } = req.params;
     const { rating } = req.body;
 
     if (!rating || rating < 0 || rating > 5) {
@@ -245,7 +245,7 @@ const rateGround = async (req, res) => {
     }
 
     // Find the ground details
-    const groundDetail = await GroundDetail.findOne({ ground: groundId });
+    const groundDetail = await GroundDetail.findOne({ ground: id });
     if (!groundDetail) {
       return res.status(404).json({ message: "Ground details not found" });
     }
