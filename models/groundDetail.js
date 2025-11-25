@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const groundDetailSchema = new mongoose.Schema({
   ground: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Ground', // Reference to the Ground model
+    ref: "Ground", // Reference to the Ground model
     required: true,
   },
   rating: {
@@ -37,4 +37,4 @@ const groundDetailSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('GroundDetail', groundDetailSchema);
+module.exports = mongoose.model("GroundDetail", groundDetailSchema);
