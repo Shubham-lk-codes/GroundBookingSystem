@@ -35,13 +35,11 @@ const addGround = async (req, res) => {
 
     console.log("✅ Ground added successfully:", newGround);
 
-    res
-      .status(201)
-      .json({
-        success: true,
-        msg: "Ground added successfully",
-        ground: newGround,
-      });
+    res.status(201).json({
+      success: true,
+      msg: "Ground added successfully",
+      ground: newGround,
+    });
   } catch (err) {
     console.error("❌ Error adding ground:", err.message);
     console.error(err.stack);
@@ -294,7 +292,3 @@ module.exports = {
   getGroundRating,
   rateGround,
 };
-
-
-
-
